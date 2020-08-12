@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /images/cert1.jpg
+Disallow: /images/cert2.png
+Disallow: /images/cert3.png
+Disallow: /images/cert4.png
+Disallow: /images/cert5.png
