@@ -1,0 +1,13 @@
+User-agent: Googlebot
+Disallow: /images/cert1.jpg
+Disallow: /images/cert2.png
+Disallow: /images/cert3.png
+Disallow: /images/cert4.png
+Disallow: /images/cert5.png
+
+User-agent: DuckDuckBot
+Disallow: /images/cert1.jpg
+Disallow: /images/cert2.png
+Disallow: /images/cert3.png
+Disallow: /images/cert4.png
+Disallow: /images/cert5.png
