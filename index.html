@@ -484,7 +484,7 @@
       </div>
     </section>
 
-	<?php include('form_process.php'); ?>
+	<?php include('send_form_email.php'); ?>
     <section class="site-section" id="contact-section">
       <div class="container">
         <div class="row">
@@ -494,31 +494,31 @@
         </div>
         <div class="row justify-content-between">
           <div class="col-lg-6">
-            <form action="<?= $_SERVER['PHP_SELF']; ?>" class="form">
+            <form action="send_form_email.php" method="post">
               <div class="row mb-4">
                 <div class="form-group col-6">
-                  <input type="text" class="form-control" placeholder="First name" name="name">
+                  <input type="text" class="form-control" placeholder="First name" name="name" required>
                 </div>
                 <div class="form-group col-6">
-                  <input type="text" class="form-control" placeholder="Full name" name="fname">
+                  <input type="text" class="form-control" placeholder="Full name" name="fname" required>
                 </div>
               </div>
 
               <div class="row mb-4">
                 <div class="form-group col-12">
-                  <input type="email" class="form-control" placeholder="Email address" name="email">
+                  <input type="email" class="form-control" placeholder="Email address" name="email" required>
                 </div>
               </div>
 
               <div class="row mb-4">
                 <div class="form-group col-12">
-                  <input type="text" class="form-control" placeholder="Subject of the message" name="subject">
+                  <input type="text" class="form-control" placeholder="Subject of the message" name="subject" required>
                 </div>
               </div>
 
               <div class="row mb-4">
                 <div class="form-group col-12">
-                  <textarea name="" id="" cols="30" rows="10" class="form-control" placeholder="Type your message here.." name="content"></textarea>
+                  <textarea name="" id="" cols="30" rows="10" class="form-control" placeholder="Type your message here.." name="content" required></textarea>
                 </div>
               </div>
 
