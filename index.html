@@ -484,7 +484,7 @@
       </div>
     </section>
 
-	<?php include('send_form_email.php'); ?>
+	
     <section class="site-section" id="contact-section">
       <div class="container">
         <div class="row">
@@ -494,41 +494,102 @@
         </div>
         <div class="row justify-content-between">
           <div class="col-lg-6">
-            <form action="send_form_email.php" method="post">
-              <div class="row mb-4">
-                <div class="form-group col-6">
-                  <input type="text" class="form-control" placeholder="First name" name="name" required>
-                </div>
-                <div class="form-group col-6">
-                  <input type="text" class="form-control" placeholder="Full name" name="fname" required>
-                </div>
-              </div>
+            
+			<?php
+			/**
+			* PHPMailer simple contact form example.
+			* If you want to accept and send uploads in your form, look at the send_file_upload example.
+			*/
 
-              <div class="row mb-4">
-                <div class="form-group col-12">
-                  <input type="email" class="form-control" placeholder="Email address" name="email" required>
-                </div>
-              </div>
+			//Import the PHPMailer class into the global namespace
+			use PHPMailer\PHPMailer\PHPMailer;
 
-              <div class="row mb-4">
-                <div class="form-group col-12">
-                  <input type="text" class="form-control" placeholder="Subject of the message" name="subject" required>
-                </div>
-              </div>
+			require '../vendor/autoload.php';
 
-              <div class="row mb-4">
-                <div class="form-group col-12">
-                  <textarea name="" id="" cols="30" rows="10" class="form-control" placeholder="Type your message here.." name="content" required></textarea>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-6">
-                  <input type="submit" class="btn btn-primary" value="Send Message">
-                </div>
-              </div>
-              
-            </form>
+			if (array_key_exists('to', $_POST)) {
+				$err = false;
+				$msg = '';
+				$email = '';
+				//Apply some basic validation and filtering to the subject
+				if (array_key_exists('subject', $_POST)) {
+					$subject = substr(strip_tags($_POST['subject']), 0, 255);
+				} else {
+					$subject = 'No subject given';
+				}
+				//Apply some basic validation and filtering to the query
+				if (array_key_exists('query', $_POST)) {
+				//Limit length and strip HTML tags
+					$query = substr(strip_tags($_POST['query']), 0, 16384);
+				} else {
+					$query = '';
+					$msg = 'No query provided!';
+					$err = true;
+				}
+				//Apply some basic validation and filtering to the name
+				if (array_key_exists('name', $_POST)) {
+				//Limit length and strip HTML tags
+					$name = substr(strip_tags($_POST['name']), 0, 255);
+				} else {
+					$name = '';
+				}
+				//Validate to address
+				//Never allow arbitrary input for the 'to' address as it will turn your form into a spam gateway!
+				//Substitute appropriate addresses from your own domain, or simply use a single, fixed address
+				if (array_key_exists('to', $_POST) && in_array($_POST['to'], ['sales', 'support', 'accounts'], true)) {
+					$to = $_POST['to'] . '@example.com';
+				} else {
+					$to = 'support@example.com';
+				}
+				//Make sure the address they provided is valid before trying to use it
+				if (array_key_exists('email', $_POST) && PHPMailer::validateAddress($_POST['email'])) {
+					$email = $_POST['email'];
+				} else {
+					$msg .= 'Error: invalid email address provided';
+					$err = true;
+				}
+				if (!$err) {
+					$mail = new PHPMailer;
+					$mail->isSMTP();
+					$mail->Host = 'localhost';
+					$mail->Port = 25;
+					$mail->CharSet = PHPMailer::CHARSET_UTF8;
+					//It's important not to use the submitter's address as the from address as it's forgery,
+					//which will cause your messages to fail SPF checks.
+					//Use an address in your own domain as the from address, put the submitter's address in a reply-to
+					$mail->setFrom('contact@example.com', (empty($name) ? 'Contact form' : $name));
+					$mail->addAddress($to);
+					$mail->addReplyTo($email, $name);
+					$mail->Subject = 'Contact form: ' . $subject;
+					$mail->Body = "Contact form submission\n\n" . $query;
+				if (!$mail->send()) {
+					$msg .= 'Mailer Error: '. $mail->ErrorInfo;
+				} else {
+					$msg .= 'Message sent!';
+				}
+			}
+		} ?>
+		
+		<h1>Contact me</h1>
+		<?php if (empty($msg)) { ?>
+		<form method="post">
+        
+        <select name="to" id="to">
+            <option value="sales">Sales</option>
+            <option value="support" selected="selected">Support</option>
+            <option value="accounts">Accounts</option>
+        </select><br>
+        <label for="subject">Subject: <input type="text" name="subject" id="subject" maxlength="255"></label><br>
+        <label for="name">Your name: <input type="text" name="name" id="name" maxlength="255"></label><br>
+        <label for="email">Your email address: <input type="email" name="email" id="email" maxlength="255"></label><br>
+        <label for="query">Your question:</label><br>
+        <textarea cols="30" rows="8" name="query" id="query" placeholder="Your question"></textarea><br>
+        <input type="submit" value="Submit">
+		</form>
+		<?php } else {
+			echo $msg;
+		} ?>
+			
+			
           </div>
           <div class="col-lg-5">
             <h3>University</h3>
